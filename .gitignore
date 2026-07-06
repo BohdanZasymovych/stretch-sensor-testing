@@ -246,3 +246,8 @@ __marimo__/
 # Note: The 'build/' directory is already ignored under the Python 
 # "Distribution / packaging" section above, which also safely covers
 # the Arduino CLI/IDE 2.x build directories.
+
+# logs
+log/
+logs/
+*.log
