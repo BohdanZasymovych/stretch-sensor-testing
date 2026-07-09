@@ -247,8 +247,7 @@ __marimo__/
 # "Distribution / packaging" section above, which also safely covers
 # the Arduino CLI/IDE 2.x build directories.
 
-# logs and plots
+# logs
 log/
 logs/
-plots/
 *.log
