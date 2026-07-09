@@ -14,8 +14,6 @@ def fit_sine(t, y):
     """
     t = np.asarray(t, dtype=float)
     y = np.asarray(y, dtype=float)
-
-    print(len(t))
     
     offset = np.mean(y)
     N = len(t)
@@ -117,18 +115,18 @@ def plot_csv_interactive(csv_path, skip_rows=10, curve_points=20000,
         hovermode="closest",
     )
 
-    if output_html is None:
-        base, _ = os.path.splitext(csv_path)
-        output_html = base + "_fit.html"
-    fig.write_html(output_html)
-    print(f"Saved interactive plot to {output_html}")
+    if output_html:
+        if isinstance(output_html, bool):
+            base, _ = os.path.splitext(csv_path)
+            output_html = base + "_fit.html"
+        fig.write_html(output_html)
+        print(f"Saved interactive plot to {output_html}")
 
     if open_browser:
         try:
             fig.show()
         except Exception as e:
-            print(f"(Could not auto-open a browser: {e}. "
-                  f"Open {output_html} manually instead.)", file=sys.stderr)
+            print(f"(Could not auto-open a browser: {e}.)", file=sys.stderr)
 
     return fig, fit_initial, fit_distorted
 
@@ -139,13 +137,16 @@ def main():
     parser.add_argument("csv_path", help="Path to the DAQ CSV file to plot")
     parser.add_argument("--skip-rows", type=int, default=10,
                          help="Startup rows to ignore (default: 10)")
+    parser.add_argument("--save", dest="output_html",
+                         nargs="?", const=True, default=None,
+                         help="Save plot to HTML file. Optionally specify custom file path.")
     parser.add_argument("--no-browser", dest="open_browser", action="store_false",
-                         default=True, help="Don't attempt to open a browser window; "
-                                             "just save the HTML file")
+                         default=True, help="Don't attempt to open a browser window")
     args = parser.parse_args()
 
     fig, fit_i, fit_d = plot_csv_interactive(
-        args.csv_path, skip_rows=args.skip_rows, open_browser=args.open_browser
+        args.csv_path, skip_rows=args.skip_rows, output_html=args.output_html,
+        open_browser=args.open_browser
     )
 
     print(f"\nInitial signal fit:   freq={fit_i['freq']:.4f} Hz, amplitude={fit_i['amplitude']:.2f} mV, "
